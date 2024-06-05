@@ -1,3 +1,5 @@
+print('Selamat Datang di Pasar Buah')
+
 nApel = int(input('Masukkan Jumlah Apel: '))
 nJeruk = int(input('Masukkan Jumlah Jeruk: '))
 nAnggur = int(input('Masukkan Jumlah Anggur: '))
