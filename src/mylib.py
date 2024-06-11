@@ -1,96 +1,180 @@
 from tabulate import tabulate
 
-#Validasi angka
 def string_validation(title):
+    """Fungsi untuk validasi tipe data string
+
+    Args:
+        title (String): Pesan yang akan ditampilkan pada layar
+
+    Returns:
+        String: Nilai yang diinputkan
+    """
     while True:
-        a = input(title)
-        if a.isalpha() == True:
+        teks = input(title)
+        if teks.isalpha() == True:
             break
         else:
-                print('Silahkan inputkan hanya text')
-    return a.capitalize()
-    
-#Validasi text
-def integer_validation(title):
+            print('Silahkan inputkan hanya teks')
+    return teks.capitalize()
+
+def integer_validation(title, minval=0, maxval=100):
+    """Fungsi untuk validasi bilangan bulat
+
+    Args:
+        title (String): Pesan yang akan ditampilkan pada layar
+        minval (int, optional): Nilai minimal. Defaults to 0.
+        maxval (int, optional): Nilai maksimal. Defaults to 100.
+
+    Returns:
+        Int: Nilai yang diinputkan
+    """
     while True:
-        a = input(title)
+        num = input(title)
         try:
-            a = int(a)
-            break
+            num = int(num)
+            if num >= minval and num <= maxval:
+                break
+            else:
+                print('Angka yang anda masukkan di luar rentang')
         except:
             print('Yang anda inputkan bukan bilangan')
-    return a
+    return num
 
-#Tampilkan buah
-def show(database, header=['index', 'name', 'stock', 'price']):
-    #menampilkan data dalam format tabulasi
-    print(tabulate(database, headers=header, tablefmt="simple_grid"))
+def show(database, header=['index', 'stock', 'name', 'price']):
+    """Fungsi untuk menampilkan data dalam format tabel
+
+    Args:
+        database (list): Data persediaan buah
+        header (list, optional): Nama kolom. Defaults to ['index', 'stock', 'name', 'price'].
+    """
+    # Menampilkan data dalam format tabulasi
+    print(tabulate(database, headers=header, tablefmt='grid'))
 
 def add(database):
-    name = string_validation('Masukkan Nama Buah: ')
-    stock = integer_validation('Masukkan Stock Buah: ')
-    price = integer_validation('Masukkan Harga Buah: ')
+    """Fungsi untuk menambahkan data ke dalam database
 
-    #Validasi data, jika sudah ada tambahkan yg akan diganti, jika belum tambahkan data lalu 
+    Args:
+        database (list): Data persediaan buah
+    """
+    # Meminta input data buah yang baru
+    name = string_validation(title='Masukkan Nama Buah: ')
+    stock = integer_validation(
+        title='Masukkan Stock Buah: ',
+        minval=0
+    )
+    price = integer_validation(
+        title='Masukkan Harga Buah: ',
+        minval=0,
+        maxval=100000
+    )
+
+    # Menambahkan data ke database
     for id, buah in enumerate(database):
         if name in buah:
             database[id] = [id, name, stock, price]
             break
     else:
         database.append([id+1, name, stock, price])
-        
-    # Tampilkan data
+
+    # Menampilkan database
     show(database)
-                            
+
 def delete(database):
-    #Menampilkan database terbaru
+    """Fungsi untuk menghapus data dari database
+
+    Args:
+        database (list): Data persediaan buah
+    """
+    # Menampilkan database
     show(database)
 
-    #User input
-    idx = integer_validation('Masukkan index buah yang ingin dihapus: ')
+    # Meminta user untuk input indeks buah yang akan dihapus
+    idx = integer_validation(
+        title='Masukkan indeks buah yang ingin dihapus: ',
+        maxval=len(database)
+    )
 
-    for buah in database:
-        if idx == buah[0]:
+    # Melakukan proses penghapusan sesuai indeks buah
+    for id in range(len(database)):
+        if id == idx:
             del database[idx]
-            break
     else:
-        print('Buah yang anda cari tidak ada')
+        print('Buah yang Anda cari tidak ada')
 
-    # Memperbarui index
+    # Memperbarui urutan indeks buah
     for id, buah in enumerate(database):
         if id != buah[0]:
             database[id][0] = id
 
+    # Menampilkan database
     show(database)
 
-#def buy():
+def buy(database):
+    # Menampilkan database
+    show(database)
+    
+    reorder = None
+    keranjang = []
+    while reorder != 'No':
+        # Meminta input untuk indeks dan jumlah buah yang ingin dibeli
+        id = integer_validation(
+            title='Silahkan masukkan indeks buah: ',
+            minval=0,
+            maxval=len(database)-1
+            )
+        stock = integer_validation(
+            title='Silahkan masukkan jumlah buah: ',
+            minval=0,
+            maxval=database[id][2]
+            )
+        
+        # Menambahkan ke dalam keranjang belanja
+        keranjang.append([database[id][1], stock, database[id][3]])
 
-def inputBuah(nama, stock, harga):
-    """Fungsi meminta user untuk input jumlah buah 
-    dan menghitung harganya.
+        # Menampilkan keranjang belanja
+        show(database=keranjang, header=['Nama', 'Qty', 'Harga'])
 
-    Args:
-        nama (String): Nama buah yang akan dibeli
-        stock (Integer): Stock buah yang akan dibeli
-        harga (Integer): Harga buah per kg
+        # Konfirmasi reorder
+        while True:
+            status = string_validation('Mau beli yang lain?: ').lower()
+            if status in ['yes', 'y', 'ya']:
+                reorder = 'Yes'
+            elif status in ['no', 'n', 'tidak']:
+                reorder = 'No'
+            break
 
-    Returns:
-        nBuah (Integer): Jumlah buah yang dipesan 
-        hargaBuah (Integer): Total harga buah
-    """
+    # Menghitung total harga
+    total = 0
+    for id, item in enumerate(keranjang):
+        # Hitung total harga per buah
+        totalHarga = item[1] * item[2]
+
+        # Input total harga ke keranjang
+        keranjang[id].append(totalHarga)
+
+        # Sum seluruh harga
+        total += totalHarga
+
+    # Menampilkan keranjang belanja
+    show(database=keranjang, header=['Nama', 'Qty', 'Harga', 'Total Harga'])
+
+    # Proses pembayaran
+    pembayaran(total)
+
+def pembayaran(totalHarga):
     while True:
-        # Input jumlah buah
-        nBuah = int(input(f'Masukkan jumlah {nama}: '))
+        # Input jumlah uang
+        bayar = int(input('Silahkan masukkan uang Anda: '))
 
-        # Membandingkan antara jumlah permintaan dengan stock
-        if nBuah > stock:
-            print(f'Jumlah terlalu banyak, stock tersisa {stock} buah')
+        # Hitung selisih antara bayar dengan total
+        selisih = totalHarga - bayar
+
+        # Bandingkan antara uang dengan total harga
+        if selisih > 0: 
+            print(f'Uang Anda kurang sebesar Rp.{selisih}')
             continue
-
-        # Berhenti minta input, ketika jumlah permintaan terpenuhi
-        break
-
-    # Hitung total harga untuk buah tersebut
-    hargaBuah = nBuah * harga
-
-    return nBuah, hargaBuah
+        
+        # Ucapkan terima kasih ketika selesai pembayaran
+        else:
+            print(f'''Terimakasih. Uang kembalian Anda: {abs(selisih)}''')
+            break
