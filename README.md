@@ -13,7 +13,7 @@ FruitMarket application was released in 2024 and developed by Purwadhika JCDS-04
 
 To get this project, you can clone it by running the following code:
 
-    git clone git@github.com:fandanabil1379/Fruit-Inventory-Management-Apps.git
+    git clone git@github.com:ilhamtaufieq17/FruApp.git
 
     
 ## Project Organization
@@ -35,9 +35,9 @@ The directory structure of FruitMarket project looks like this:
 
 If you'd like to contribute, feel free to contact me here:
 
-<a href="https://www.linkedin.com/in/shafandanabilsembodo/" target="_blank">
+<a href="https://www.linkedin.com/in/ilham-taufieq-julfianto/" target="_blank">
     <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/linkedin/default.svg" width="52" height="40" alt="linkedin logo"/>
   </a>
-  <a href="mailto:shafanda.nabil.s@gmail.com" target="_blank">
+  <a href="mailto:taufieq17@gmail.com" target="_blank">
     <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/gmail/default.svg"  width="52" height="40" alt="gmail logo"/>
   </a>
